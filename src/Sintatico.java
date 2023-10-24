@@ -827,6 +827,7 @@ public class Sintatico {
                 return;
             }
         }
+        System.out.print("Error variable: " + p.getLexema() + " ");
         ImprimirError(22);
         ErrorSintatico();
         throw new TerminacionMetodoException(""); 
