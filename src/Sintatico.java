@@ -406,7 +406,10 @@ public class Sintatico {
                     p = p.getUnion();
                     if(p != null &&(p.getToken()==100 || p.getToken() == 122))
                     {
-                        ValidarExistencia(a);
+                        if(p.getToken() == 100)
+                        {
+                            ValidarExistencia(a);
+                        }
                         p = p.getUnion();
                             if(p != null &&(p.getToken() == 124))
                             {
@@ -543,7 +546,10 @@ public class Sintatico {
             p = p.getUnion();
             if(p != null &&(p.getToken() == 100 || p.getToken() == 122))
             {
-                ValidarExistencia(a);
+                if(p.getToken() == 100)
+                {
+                    ValidarExistencia(a);
+                }
                 p = p.getUnion();
                 if(p != null &&(p.getToken() == 124))
                 {
@@ -762,7 +768,7 @@ public class Sintatico {
         }
 
     public void op_aditivo()
-   {
+    {
       
        if(p != null &&(p.getToken()== 103 || p.getToken()==104 || p.getToken()==115))
        {
@@ -816,7 +822,7 @@ public class Sintatico {
     {
         for(TablaSimbolos b : a)
         {
-            if(temp.getLexema().equals(b.getId()))
+            if(p.getLexema().equals(b.getId()))
             {
                 return;
             }
@@ -1479,22 +1485,22 @@ public class Sintatico {
     protected int prioridad(Nodo n){ 
         
         switch(n.getToken()){
-        case 105: // * 
-        case 106: // /
-        case 108:
-        case 109: 
-        case 110: 
-        case 111:
-        case 112: 
-        case 113: 
-            return 2; 
-        case 103: // +
-        case 104: // -
-        case 114:
-        case 115: 
-            return 1; 
-        default: 
-            return 0; 
+            case 105: // * 
+            case 106: // /
+            case 108:
+            case 109: 
+            case 110: 
+            case 111:
+            case 112: 
+            case 113: 
+                return 2; 
+            case 103: // +
+            case 104: // -
+            case 114:
+            case 115: 
+                return 1; 
+            default: 
+                return 0; 
         }
     }
     
