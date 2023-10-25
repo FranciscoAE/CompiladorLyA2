@@ -23,31 +23,36 @@ public class Sintatico {
         fr = Fr;
     }
     
-      String[][] Errores =
+    String[][] Errores =
     {
-        {"Se esperaba la palabra: main",                                                                       "1"},
-        {"Se esperaba una apertura de parentesis:: (" ,                                               "2"},
-        {"Se esperaba un cierre de parentesis: ) ",                                                       "3"},
-        {"Se esperaba una apertura de llave: {",                                                            "4"},
-        {"Se esperaba un cierre de llave: } ",                                                                 "5"},
-        {"Se esperaba un identificador: id",                                                                   "6"},
-        {"Se esperaba una palabra reservada: if /while/print/id",                                "7"},
-        {"Se esperaba un cierre de instruccion: ;",                                                       "8"},
+        {"Se esperaba la palabra: main",                                                "1"},
+        {"Se esperaba una apertura de parentesis:: (" ,                                 "2"},
+        {"Se esperaba un cierre de parentesis: ) ",                                     "3"},
+        {"Se esperaba una apertura de llave: {",                                        "4"},
+        {"Se esperaba un cierre de llave: } ",                                          "5"},
+        {"Se esperaba un identificador: id",                                            "6"},
+        {"Se esperaba una palabra reservada: if /while/print/id",                       "7"},
+        {"Se esperaba un cierre de instruccion: ;",                                     "8"},
         {"Se esperaba la declaracion de alguna variable: bool/int/float/string",        "9"},
-        {"Se esperaba la declaracion de alguna sentencia",                                    "10"},
-        {"Se esperaba el simbolo igualitario: =",                                                        "11"},
-        {"Se esperaba un operador aditivo",                                                              "12"},
-        {"Se esperaba un operador multiplicativo",                                                    "13"},
-        {"Se esperaba la declaracion de un signo",                                                   "14"},
-        {"Se esperaba la declaracion de una expresion relacional",                       "15"},
-        {"Se esperaba un signo de exclamacion: !",                                                  "16"},
-        {"Se espera un cierre de cadena",                                                                  "17"},
-        {"Se espera el uso de una coma: , ",                                                               "18"},
-        {"Se esperaba la palabra reservada: new ",                                                  "19"},
-        {"Se espera un identificador(id) o una cadena ",                                           "20"},
-        {"Se esperaba un valor de asignación:",                                                        "21"},
-        {"La variable NO esta declarada      ",                                                        "22"},
-        {"La variable YA esta declarada      ",                                                        "23"}
+        {"Se esperaba la declaracion de alguna sentencia",                             "10"},
+        {"Se esperaba el simbolo igualitario: =",                                      "11"},
+        {"Se esperaba un operador aditivo",                                            "12"},
+        {"Se esperaba un operador multiplicativo",                                     "13"},
+        {"Se esperaba la declaracion de un signo",                                     "14"},
+        {"Se esperaba la declaracion de una expresion relacional",                     "15"},
+        {"Se esperaba un signo de exclamacion: !",                                     "16"},
+        {"Se espera un cierre de cadena",                                              "17"},
+        {"Se espera el uso de una coma: , ",                                           "18"},
+        {"Se esperaba la palabra reservada: new ",                                     "19"},
+        {"Se espera un identificador(id) o una cadena ",                               "20"},
+        {"Se esperaba un valor de asignación:",                                        "21"},
+        //Semantico
+        {"La variable aun NO ha sido declarada",                                       "22"},
+        {"La variable YA ha sido declarada",                                           "23"},
+        {"Desbordamiento. La variable no puede almacenar mas de 10 digitos",           "24"},
+        {"Desbordamiento. La variable no puede almacenar mas de 100 caracteres",       "25"},
+        {"El valor asignado no concuerda con el tipo de la variable",                  "26"},
+        {"Los valores no concuerdan para ser comparados logicamente",                  "27"},
     }; 
       
     public void pawn()
@@ -162,6 +167,7 @@ public class Sintatico {
                 {
                     p = p.getUnion();
                     exp_simp();
+                    arbolAsignacion(temp, 0);
                     if(p != null && (p.getToken() == 124))
                     {
                         guardarVariable();
@@ -233,6 +239,7 @@ public class Sintatico {
                 {
                     p = p.getUnion();
                     exp_simp();
+                    arbolAsignacion(temp, 0);
                     if(p != null &&(p.getToken() == 124))
                     {
                         guardarVariable();
@@ -793,7 +800,7 @@ public class Sintatico {
             if(bandError == (Integer.valueOf(Error[1])))
             {
                 if(p != null){
-                    System.out.println("El error es:  " + Error[0] + " en la linea: " + p.getRenglon());
+                    System.out.println("El error es:  "  + Error[0]  + " en la linea: " + p.getRenglon());
                 }
                 else
                 {
@@ -827,7 +834,7 @@ public class Sintatico {
                 return;
             }
         }
-        System.out.print("Error variable: " + p.getLexema() + " ");
+        System.out.println("Error con el identificador: " + p.getLexema());
         ImprimirError(22);
         ErrorSintatico();
         throw new TerminacionMetodoException(""); 
@@ -841,6 +848,7 @@ public class Sintatico {
         {
             if(temp.getLexema().equals(b.getId()))
             {
+                System.out.println("Error con el identificador: " + temp.getLexema());
                 ImprimirError(23);
                 ErrorSintatico();
                 throw new TerminacionMetodoException(""); 
@@ -853,7 +861,7 @@ public class Sintatico {
         Stack<Nodo> Simbolos = new Stack<Nodo>(); 
         Stack<Hoja> cantidades = new Stack<Hoja>();
         if(opc == 0){
-            while(n.getToken() != 125){
+            while(n.getToken() != 125 && n.getToken() != 124){
 
                 if(n.getToken() == 100 || n.getToken() == 101 || n.getToken() == 102 || n.getToken() == 122 || 
                 n.getToken() == 210 ||  n.getToken() == 211){
@@ -863,7 +871,8 @@ public class Sintatico {
                             break;
                         case 101:
                             if(n.getLexema().length() > 10){
-                                System.out.print("Error Semantico: Desbordamiento. La variable no puede almacenar mas de 10 digitos");
+                                System.out.println("Error con el identificador: " + n.getToken());
+                                ImprimirError(24);
                                 fr.getLabelSem().setForeground(new java.awt.Color(247, 36, 36));
                                 fr.getLabelSem().setText("----X----");;
                                 fr.getLabelSin().setForeground(new java.awt.Color(53, 97, 240));
@@ -878,7 +887,8 @@ public class Sintatico {
                                 fr.getLabelSem().setText("----X----");;
                                 fr.getLabelSin().setForeground(new java.awt.Color(53, 97, 240));
                                 fr.getLabelSin().setText("----?----");
-                                System.out.print("Error Semantico: Desbordamiento. La variable no puede almacenar mas de 10 digitos");
+                                System.out.println("Error con el identificador: " + n.getToken());
+                                ImprimirError(24);
                                 throw new TerminacionMetodoException(""); 
                             }
                             break;
@@ -889,7 +899,8 @@ public class Sintatico {
                                 fr.getLabelSem().setText("----X----");;
                                 fr.getLabelSin().setForeground(new java.awt.Color(53, 97, 240));
                                 fr.getLabelSin().setText("----?----");
-                                System.out.print("Error Semantico: Desbordamiento. La variable no puede almacenar mas de 100 caracteres");
+                                System.out.println("Error con el identificador: " + n.getToken());
+                                ImprimirError(25);
                                 throw new TerminacionMetodoException(""); 
                             }
                             break;
@@ -1045,7 +1056,8 @@ public class Sintatico {
                     int d1 = semantico.pop();
 
                     if(d1 != d2){
-                        System.out.print("Error Semantico: el valor asignado no concuerda con el tipo de la variable");
+                        System.out.println("Error en la asignacion: ");
+                        ImprimirError(26);
                         fr.getLabelSem().setForeground(new java.awt.Color(247, 36, 36));
                         fr.getLabelSem().setText("----X----");;
                         fr.getLabelSin().setForeground(new java.awt.Color(53, 97, 240));
@@ -1097,7 +1109,8 @@ public class Sintatico {
                     int d1 = semantico.pop();
                     if(213 != d1)
                     {
-                        System.out.print("Error Semantico: el valor asignado no concuerda con el tipo de la variable");
+                        System.out.println("Error en la asignacion: ");
+                        ImprimirError(27);
                         fr.getLabelSem().setForeground(new java.awt.Color(247, 36, 36));
                         fr.getLabelSem().setText("----X----");;
                         fr.getLabelSin().setForeground(new java.awt.Color(53, 97, 240));
@@ -1471,7 +1484,7 @@ public class Sintatico {
     }
 
     private int buscarVariable(Nodo p) {
-        int result = p.getToken();
+        int result = token;
         for(TablaSimbolos  b : a)
         {
             if(p.getLexema().equals(b.getId()))
