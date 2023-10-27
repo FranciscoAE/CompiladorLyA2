@@ -6,15 +6,14 @@ import java.util.Stack;
 public class Sintatico {
     //Sintactico
     Nodo p;
-    Nodo temp;
     Frame fr;
      
     //Para semantico
     String TipoDato, Linea, Id;
     int token;
     ArrayList<TablaSimbolos>  a = new ArrayList<TablaSimbolos>();
-    ArrayList<Nodo> n = new ArrayList<Nodo>();
     TablaSimbolos R;
+    Nodo temp;
     
     //Constructor
     public Sintatico(Nodo nodo, Frame Fr)
@@ -134,14 +133,14 @@ public class Sintatico {
             throw new TerminacionMetodoException("");
             }
         }
-        System.out.println("Analizador Sintatico Terminado.");
+       System.out.println("Analizador Sintatico/Semantico Terminado. \n");
+       System.out.println( "\tDato\tId\tRenglon\tToken\tValor\t\n");
        for (TablaSimbolos  b :  a) {
-            System.out.println(b.getDato() + " " + b.getId() + " " + b.getRenglon() + " " + b.getToken());
+            System.out.println("\t"+b.getDato() + "\t" + b.getId() + "\t" + b.getRenglon() + "\t" + b.getToken() + "\t" + b.getValor()+"\t");
        }
     }
 
-    public void variable()
-    {
+    public void variable(){
         if(p != null &&(p.getToken() == 207)){
             p = p.getUnion();
             tipos();
@@ -752,13 +751,13 @@ public class Sintatico {
             p = p.getUnion();
 
         }
-            else
-            {
-                ImprimirError(14);
-                ErrorSintatico();
-                throw new TerminacionMetodoException("");
-            }
+        else
+        {
+            ImprimirError(14);
+            ErrorSintatico();
+            throw new TerminacionMetodoException("");
         }
+    }
 
     public void op_mult()
         {
@@ -811,6 +810,15 @@ public class Sintatico {
     }
 
 //SEMANTICO SECCION
+//Fase semantica.
+
+//Detección de variable declarada 
+
+//variable duplicada 
+
+//tipo de dato
+
+//capacidad del tipo de dato
 
     //variables para usar
     Stack<Integer> semantico = new Stack<Integer>();
@@ -825,7 +833,7 @@ public class Sintatico {
         a.add(R);
     }
 
-    public void ValidarExistencia(ArrayList<TablaSimbolos> a)// Error 1: No existe la variable
+    public void ValidarExistencia(ArrayList<TablaSimbolos> a)// Detección de variable declarada
     {
         for(TablaSimbolos b : a)
         {
@@ -841,7 +849,7 @@ public class Sintatico {
 
     }
 
-    public void ValidarIgualdad(ArrayList<TablaSimbolos> a) // Error 2: La variable esta duplicada
+    public void ValidarIgualdad(ArrayList<TablaSimbolos> a) // Variable Duplicada
     {
         
         for(TablaSimbolos  b : a)
@@ -864,8 +872,8 @@ public class Sintatico {
             while(n.getToken() != 125 && n.getToken() != 124){
 
                 if(n.getToken() == 100 || n.getToken() == 101 || n.getToken() == 102 || n.getToken() == 122 || 
-                n.getToken() == 210 ||  n.getToken() == 211){
-                //Aqui se evalua el error 3: Longitud de variables.
+                n.getToken() == 210 ||  n.getToken() == 211){  //id,entero,decimal,cadena,true,false
+                //Aqui se evalua el error longitud de variable.
                     switch(n.getToken()){
                         case 100:
                             break;
@@ -912,11 +920,31 @@ public class Sintatico {
                     n = n.getUnion();
                 }
                 else if(n.getToken() == 117){ // ( 
-                    Simbolos.push(n); 
-                    n = n.getUnion(); 
+                    if(n.getUnion().getToken() == 103 || n.getUnion().getToken() == 104)
+                    {
+
+                        Simbolos.push(n); 
+                        n = n.getUnion();
+                        
+                        
+                        Nodo op = n;
+                        n = n.getUnion();
+                        Hoja d2 = new Hoja(n);
+                        Hoja d1 = new Hoja(new Nodo("0",101,n.getRenglon()));
+                        Hoja Tope = new Hoja(op);
+                        Tope.setIzq(d1);
+                        Tope.setDer(d2); 
+                        cantidades.push(Tope); 
+
+                        n = n.getUnion();
+                    
+                    }
+                    else{
+                        Simbolos.push(n); 
+                        n = n.getUnion(); 
+                    }
                 }
                 else if(n.getToken() == 118){ // )
-                
                     while(!Simbolos.isEmpty() && !(Simbolos.peek().getToken() == 117)) 
                     { 
                         Nodo op = Simbolos.pop(); 
@@ -931,21 +959,41 @@ public class Sintatico {
                     Simbolos.pop();
                     n = n.getUnion();
                 }
-                else
+
+                else // cualquier otro operador como -,*,/,+
                 {
-                    while(!Simbolos.isEmpty() && prioridad(n) <= prioridad(Simbolos.peek())) 
-                    { 
-                        Nodo op = Simbolos.pop(); 
-                        Hoja d2 = cantidades.pop(); 
-                        Hoja d1 = cantidades.pop(); 
-                        Hoja Tope = new Hoja(op); 
-                        //Creamos el nodo 
-                        Tope.setIzq(d1); 
+                    if(n.getUnion().getToken() == 103 || n.getUnion().getToken() == 104){ //Si el siguiente valor tiene un signo
+                        Simbolos.push(n); 
+                        n = n.getUnion();
+
+                        Nodo op = n;
+                        n = n.getUnion();
+                        Hoja d2 = new Hoja(n);
+                        Hoja d1 = new Hoja(new Nodo("0",101,n.getRenglon()));
+                        Hoja Tope = new Hoja(op);
+                        Tope.setIzq(d1);
                         Tope.setDer(d2); 
                         cantidades.push(Tope); 
-                    }    
-                    Simbolos.push(n); 
-                    n = n.getUnion();
+
+                        n = n.getUnion();
+
+                    }
+                    else{
+                        while(!Simbolos.isEmpty() && prioridad(n) <= prioridad(Simbolos.peek())) 
+                        { 
+                            Nodo op = Simbolos.pop(); 
+                            Hoja d2 = cantidades.pop(); 
+                            Hoja d1 = cantidades.pop(); 
+                            Hoja Tope = new Hoja(op); 
+                            //Creamos el nodo 
+                            Tope.setIzq(d1); 
+                            Tope.setDer(d2); 
+                            cantidades.push(Tope); 
+                        }    
+                        Simbolos.push(n); 
+                        n = n.getUnion();
+                    }
+                    
                 }
             }
 
@@ -964,6 +1012,10 @@ public class Sintatico {
             Hoja peek = cantidades.peek();
             AnalisisValor(peek,0);
 
+            if(!(peek.getDer().getIzq() != null && peek.getDer().getIzq() != null))
+            {
+                buscarVariable(peek.getIzq().getNodo(), peek.getDer().getNodo());
+            }
 
         }
         else{
@@ -1008,10 +1060,11 @@ public class Sintatico {
             }
             Hoja peek = cantidades.peek();
             AnalisisValor(peek, 1);
+
         }
         
     }
-
+                                                            //Tipo de dato
     private void AnalisisValor(Hoja peek, int opc) {
         if(opc == 0){
             if(peek != null)
@@ -1496,6 +1549,15 @@ public class Sintatico {
         return result;
     }
 
+    private void  buscarVariable(Nodo p, Nodo p2) {
+        for (TablaSimbolos b : a) {
+            if (p.getLexema().equals(b.getId())) {
+                // Actualiza el valor de la variable en la tabla de símbolos
+                b.setValor(p2.getLexema());
+            }
+        }
+    }
+
     protected int prioridad(Nodo n){ 
         
         switch(n.getToken()){
@@ -1554,8 +1616,15 @@ public class Sintatico {
             this.der = a;
         }
 
+        public Nodo getNodo(){
+            return n;
+        }
+
+
 
     }
+
+    
 }
 
 class TerminacionMetodoException extends RuntimeException {

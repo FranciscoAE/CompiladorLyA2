@@ -1,8 +1,8 @@
 public class TablaSimbolos {
-    private int Token;
-    private String TipoDato;
-    private String Id;
-    private String Renglon;
+    private int Token; //token del tipo de dato
+    private String TipoDato; //nombre del tipo de dato: int,string,bool,float
+    private String Id;      //Id de la variable
+    private String Renglon; //Renglon donde se encuentra la variable
 
     //No importan mucho
     private Object valor;

@@ -355,7 +355,7 @@ public class Frame extends javax.swing.JFrame{
         }
         System.out.println("Analizador Lexico  terminado");
         System.out.println("*----------------------------------------*\n");
-        System.out.println("Comienzo de analisis Sintatico");
+        System.out.println("Comienzo de analisis Sintatico/semantico");
         System.out.println("*----------------------------------------*\n");
         Sintatico St = new Sintatico(lecture.Inicio,this);
         St.pawn();
@@ -369,9 +369,7 @@ public class Frame extends javax.swing.JFrame{
         
     }                                           
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String args[]) {
         
         try {
