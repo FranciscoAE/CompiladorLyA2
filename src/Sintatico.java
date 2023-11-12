@@ -12,9 +12,12 @@ public class Sintatico {
     String TipoDato, Linea, Id;
     int token;
     ArrayList<TablaSimbolos>  a = new ArrayList<TablaSimbolos>();
+    ArrayList<Hoja>  b = new ArrayList<Hoja>();
     TablaSimbolos R;
     Nodo temp;
     
+    //Para Intermedio 
+    Intermedio intermedio = new Intermedio();
     //Constructor
     public Sintatico(Nodo nodo, Frame Fr)
     {
@@ -138,6 +141,8 @@ public class Sintatico {
        for (TablaSimbolos  b :  a) {
             System.out.println("\t"+b.getDato() + "\t" + b.getId() + "\t" + b.getRenglon() + "\t" + b.getToken() + "\t" + b.getValor()+"\t");
        }
+       intermedio = new Intermedio(b, a);
+       intermedio.CrearIntermedio();
     }
 
     public void variable(){
@@ -789,9 +794,6 @@ public class Sintatico {
       }
   }
     
-    
-
-    
     public void ImprimirError(int bandError)
     {
         for(String[] Error : Errores)
@@ -1011,6 +1013,7 @@ public class Sintatico {
 
             Hoja peek = cantidades.peek();
             AnalisisValor(peek,0);
+            b.add(peek);
 
             if(!(peek.getDer().getIzq() != null && peek.getDer().getIzq() != null))
             {
@@ -1060,6 +1063,7 @@ public class Sintatico {
             }
             Hoja peek = cantidades.peek();
             AnalisisValor(peek, 1);
+            b.add(peek);
 
         }
         
@@ -1150,17 +1154,13 @@ public class Sintatico {
                         semantico.push(t); 
                     }
                 }
-                else if(peek.n.getToken() == 108 || peek.n.getToken() == 109 || peek.n.getToken() == 110 || peek.n.getToken() == 111 ||
-                        peek.n.getToken() == 112 || peek.n.getToken() == 113){
+                else{
 
                     int d2 = semantico.pop();
                     int d1 = semantico.pop();
                     int t = TablaTipos(peek.n.getToken(),d1,d2);
                     semantico.push(t);
-                }
-                else{
-                    int d1 = semantico.pop();
-                    if(213 != d1)
+                    if(213 != t)
                     {
                         System.out.println("Error en la asignacion: ");
                         ImprimirError(27);
@@ -1171,6 +1171,7 @@ public class Sintatico {
                         throw new TerminacionMetodoException(""); 
                     }
                 }
+                
             }
         }
         
@@ -1587,44 +1588,6 @@ public class Sintatico {
         fr.getLabelSem().setText("----?----");
     }
 
-    private class Hoja{
-
-        //Atributos
-        protected Nodo n;
-        protected Hoja izq, der;
-
-        //Constructores
-        public Hoja(Nodo N) {
-            this.n = N;
-        }
-
-        //Encapsulamiento 
-        public Hoja getIzq()
-        {
-            return izq;
-        }
-
-        public void setIzq(Hoja a){
-            this.izq = a;
-        }
-
-        public Hoja getDer(){
-            return der;
-        }
-
-        public void setDer(Hoja a){
-            this.der = a;
-        }
-
-        public Nodo getNodo(){
-            return n;
-        }
-
-
-
-    }
-
-    
 }
 
 class TerminacionMetodoException extends RuntimeException {
@@ -1632,3 +1595,4 @@ class TerminacionMetodoException extends RuntimeException {
         super(mensaje);
     }
 }
+

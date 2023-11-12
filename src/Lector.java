@@ -331,27 +331,4 @@ public class Lector {
             Puntero = Puntero.getUnion();
         }
     }
-
-//Testeo
-    public void Testeo()
-    {
-        try
-        {
-            Lector = new FileReader(archivo);
-            buffer = new BufferedReader(Lector);
-            buffer.mark(10000000);
-            while((caracter = buffer.read()) != -1)
-            {
-                lexema = lexema + (char) caracter;
-                buffer.reset();
-                System.out.print(lexema);
-            }
-        
-        }
-    
-        catch(Exception e)
-        {
-            System.out.println(e);
-        }
-    }
 }
