@@ -1,7 +1,11 @@
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Stack;
+
+import javax.naming.spi.DirStateFactory.Result;
 
 
 public class Intermedio {
@@ -106,6 +110,17 @@ public class Intermedio {
         System.out.println("\n");
         System.out.println(Data + "\n");
         System.out.println(Code + "\n");
+        GenerarASM();
+    }
+
+    private void GenerarASM() {
+        String result = Data + "\n\n" + Code;
+        String rutaArchivo = "expresion.asm";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(rutaArchivo)))) {
+            writer.write(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void GenerarCuadruplos(Hoja a)
