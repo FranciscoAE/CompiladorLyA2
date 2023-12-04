@@ -16,6 +16,7 @@ public class Sintatico {
     TablaSimbolos R;
     Nodo temp;
     
+    
     //Para Intermedio 
     Intermedio intermedio = new Intermedio();
     //Constructor
@@ -57,8 +58,9 @@ public class Sintatico {
         {"Los valores no concuerdan para ser comparados logicamente",                  "27"},
     }; 
       
-    public void pawn()
+    public Nodo pawn()
     {
+        Nodo head = p;
         while(p != null)
         {
             if(p != null && ( p.getToken() == 203))
@@ -141,8 +143,7 @@ public class Sintatico {
        for (TablaSimbolos  b :  a) {
             System.out.println("\t"+b.getDato() + "\t" + b.getId() + "\t" + b.getRenglon() + "\t" + b.getToken() + "\t" + b.getValor()+"\t");
        }
-       intermedio = new Intermedio(b, a);
-       intermedio.CrearIntermedio();
+       return head;
     }
 
     public void variable(){
@@ -1177,7 +1178,6 @@ public class Sintatico {
         
     }
 
-
     //Nexos de ayuda
     private int TablaTipos(int op, int d1, int d2) {
         Map<Integer, Map<Integer,Integer>> Sum = new HashMap<>();
@@ -1588,6 +1588,13 @@ public class Sintatico {
         fr.getLabelSem().setText("----?----");
     }
 
+    public ArrayList<TablaSimbolos> RegresarTablaSimbolos(){
+        return a;
+    }
+
+    public ArrayList<Hoja> RegresarArbol(){
+        return b;
+    }
 }
 
 class TerminacionMetodoException extends RuntimeException {

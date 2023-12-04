@@ -13,6 +13,11 @@ public class Nodo {
         this.Token = token;
         this.Renglon = renglon;
     }
+
+    public Nodo()
+    {
+        
+    }
  
  
  

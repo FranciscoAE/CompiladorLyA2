@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -15,7 +16,12 @@ import java.awt.*;
 public class Frame extends javax.swing.JFrame{
 
     private File selectedFile = null;
+    Nodo p;
+    ArrayList<TablaSimbolos> a;
+    ArrayList<Hoja> b;
     Lector lecture = new Lector();
+    Sintatico St;
+    Intermedio inter;
     public Frame() {
         initComponents();
         PrintStream printStream = new PrintStream(new CustomOutputStream(TxtMensaje));
@@ -357,8 +363,11 @@ public class Frame extends javax.swing.JFrame{
         System.out.println("*----------------------------------------*\n");
         System.out.println("Comienzo de analisis Sintatico/semantico");
         System.out.println("*----------------------------------------*\n");
-        Sintatico St = new Sintatico(lecture.Inicio,this);
-        St.pawn();
+        St = new Sintatico(lecture.Inicio,this);
+        p = St.pawn();
+        a = St.RegresarTablaSimbolos();
+        b = St.RegresarArbol();
+        System.out.println("Nodo p: " + p + "\n");
         labEstatusSinR.setForeground(new java.awt.Color(122, 240, 53));
         labEstatusSinR.setText("----O----");
         labEstatusSemR.setForeground(new java.awt.Color(122, 240, 53));
@@ -366,7 +375,10 @@ public class Frame extends javax.swing.JFrame{
     }                                           
 
     private void btnEjecutarActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        
+        inter = new Intermedio(p,b,a);
+        inter.CrearIntermedio();
+        inter.GenerarMaquina();
+        inter.CrearMaquina();
     }                                           
 
 
