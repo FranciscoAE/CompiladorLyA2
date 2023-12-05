@@ -261,20 +261,20 @@ public class Intermedio {
                 case "+":
                     Data = Data + " DECLARE" +  " dd " + b.resultado + " ? " + "\n";
                     Code = Code + " SUMA " + b.op1 + " , " + b.op2 + "\n";
-                    Code = Code + " ASIGNAR " + b.resultado + " , SUMA\n";
+                    Code = Code + " ASIGNAR " + b.resultado + " , SUMA" + "\n";
                     break;
                 case "-":
-                    Data = Data + " DECLARE " +  " dd " + b.resultado + " ? " + "\n";
+                    Data = Data + " DECLARE" +  " dd " + b.resultado + " ? " + "\n";
                     Code = Code + " SUB " + b.op1 + " , " + b.op2 + "\n";
                     Code = Code + " ASIGNAR " + b.resultado + " , SUB\n";
                     break;
                 case "*":
-                    Data = Data + " DECLARE " +  " dd " + b.resultado + " ? " + "\n";
+                    Data = Data + " DECLARE" +  " dd " + b.resultado + " ? " + "\n";
                     Code = Code + " MUL " + b.op1 + " , " + b.op2 + "\n";
                     Code = Code + " ASIGNAR " + b.resultado + " , MUL\n";
                     break;
                 case "/":
-                    Data = Data + " DECLARE " +  " dd " + b.resultado + " ? " + "\n";
+                    Data = Data + " DECLARE" +  " dd " + b.resultado + " ? " + "\n";
                     Code = Code + " DIV " + b.op1 + " , " + b.op2 + "\n";
                     Code = Code + " ASIGNAR " + b.resultado + " , DIV\n";
                     break;
@@ -417,29 +417,38 @@ public class Intermedio {
                     CodeMaquina = CodeMaquina + "\t\tMOV ds, ax" + "\n\n";
                     break;
                 case "ASIGNAR":
+                if(palabras[i+3].contains("t") )
+                {
                     CodeMaquina = CodeMaquina + "\t\tMOV ";
                     i++;
-                    for(Cuadruplo a: cuadruploData){
-                        if(palabras[i].equals(a.resultado))
-                        {
-
-                        }
-                    }
-                    CodeMaquina = CodeMaquina + palabras[i];
+                    CodeMaquina = CodeMaquina + "bl "; //var1
+                    String pal = palabras[i];
                     i++;
-                    CodeMaquina = CodeMaquina + palabras[i] + " ";
+                    CodeMaquina = CodeMaquina + palabras[i] + " "; //,
                     i++;
-                    CodeMaquina = CodeMaquina + palabras[i] + " ";
+                    CodeMaquina = CodeMaquina + palabras[i] + " "; //var2
+                    CodeMaquina = CodeMaquina + "\t\tMOV " + pal + ", bl \n";                  
+                }
+                else
+                {
+                    CodeMaquina = CodeMaquina + "\t\tMOV ";
+                    i++;
+                    CodeMaquina = CodeMaquina + palabras[i]; //var1
+                    i++;
+                    CodeMaquina = CodeMaquina + palabras[i] + " "; //,
+                    i++;
+                    CodeMaquina = CodeMaquina + palabras[i] + " "; //var2
+                }
                     break;
                 case "SUMA":
                     i++;
-                    CodeMaquina = CodeMaquina + "\t\tMOV al, " + palabras[i] +  "\n";
+                    CodeMaquina = CodeMaquina + "\t\tMOV al, "  + palabras[i] +  "\n";
                     i++;
                     i++;
-                    CodeMaquina = CodeMaquina + "\t\tADD al, " + palabras[i] +  "\n";
+                    CodeMaquina = CodeMaquina + "\t\tADD al, "  + palabras[i] +  "\n";
                     i++;
                     i++;
-                    CodeMaquina = CodeMaquina + "\t\tMOV " + palabras[i] + ", al" + "\n";
+                    CodeMaquina = CodeMaquina + "\t\tMOV "  +  palabras[i] + ", al" + "\n";
                     i++;
                     i++;
                     break;
@@ -448,7 +457,8 @@ public class Intermedio {
                     CodeMaquina = CodeMaquina + "\t\tMOV al, " + palabras[i] +  "\n";
                     i++;
                     i++;
-                    CodeMaquina = CodeMaquina + "\t\tDIV " + palabras[i] +  "\n";
+                    CodeMaquina = CodeMaquina + "\t\tMOV bl, " + palabras[i] + "\n";
+                    CodeMaquina = CodeMaquina + "\t\tDIV bl" +  "\n";
                     i++;
                     i++;
                     CodeMaquina = CodeMaquina + "\t\tMOV " + palabras[i] + ", al" + "\n";
@@ -472,7 +482,8 @@ public class Intermedio {
                     CodeMaquina = CodeMaquina + "\t\tMOV al, " + palabras[i] +  "\n";
                     i++;
                     i++;
-                    CodeMaquina = CodeMaquina + "\t\tMUL " + palabras[i] +  "\n";
+                    CodeMaquina = CodeMaquina + "\t\tMOV bl, " + palabras[i] + "\n";
+                    CodeMaquina = CodeMaquina + "\t\tMUL bl" + "\n";
                     i++;
                     i++;
                     CodeMaquina = CodeMaquina + "\t\tMOV " + palabras[i] + ", al" + "\n";
@@ -504,18 +515,19 @@ public class Intermedio {
                             switch(a.op1)
                             {
                                 case "int":
-                                    CodeMaquina = CodeMaquina + "\t\tMOV ax, 0000h" +  "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tMOV al, " + palabras[i] +  "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tAAA " +  "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tMOV cx, ax" + "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tMOV cx, 3030h" + "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tMOV ah, 09h" + "\n";
+                                case "float":
+                                    CodeMaquina = CodeMaquina + "\t\tMOV dl, " + palabras[i] +  "\n";
+                                    CodeMaquina = CodeMaquina + "\t\tADD dl, 30h" + "\n";
+                                    //CodeMaquina = CodeMaquina + "\t\tAAA " +  "\n";
+                                    //CodeMaquina = CodeMaquina + "\t\tMOV cx, ax" + "\n";
+                                    //CodeMaquina = CodeMaquina + "\t\tMOV cx, 3030h" + "\n";
+                                    //CodeMaquina = CodeMaquina + "\t\tMOV ah, 09h" + "\n";
                                     CodeMaquina = CodeMaquina + "\t\tMOV ah, 02h" + "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tMOV dl, ch" + "\n";
+                                    //CodeMaquina = CodeMaquina + "\t\tMOV dl, ch" + "\n";
                                     CodeMaquina = CodeMaquina + "\t\tint 21h" + "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tMOV ah, 02h" + "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tMOV dl, cl" + "\n";
-                                    CodeMaquina = CodeMaquina + "\t\tint 21h" + "\n";
+                                    //CodeMaquina = CodeMaquina + "\t\tMOV ah, 02h" + "\n";
+                                    //CodeMaquina = CodeMaquina + "\t\tMOV dl, cl" + "\n";
+                                    //CodeMaquina = CodeMaquina + "\t\tint 21h" + "\n";
                                 break;
                                 case "string":
                                     CodeMaquina = CodeMaquina + "\t\tmov dx, offset " + palabras[i] +  "\n";

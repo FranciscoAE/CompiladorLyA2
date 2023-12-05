@@ -2,9 +2,12 @@
 .stack 
 
 .data
-	a db ?
-	b db "resultado:",10,13,'$' 
-	t0 db ?
+	d db 30
+	e db 4
+	f db 5
+	g db ?
+	caca db "Hola",10,13,'$' 
+	t2 db ?
 
 
 .code
@@ -14,29 +17,51 @@
 		MOV ax, @data
 		MOV ds, ax
 
-		MOV al, 3
-		ADD al, 6
+		MOV d, 3
+ 		MOV e, 4
+ 	L0:
 
-		MOV t0, al
-		MOV a, al
- 		mov dx, offset b
-		mov ah, 9 
-		int 21h
-		MOV dl, a
-		add dl,30h
+		MOV al, 30
+		CMP al, d
+
+		JE L1
+
+		MOV al, d
+		CMP al, e
+
+		JNE L2
+
+		MOV f, 5
+ 		MOV dl, f
+		ADD dl, 30h
 		MOV ah, 02h
 		int 21h
+		MOV d, 30
+ 		JMP L3
 
-		;AAA 
-		;MOV cx, ax
-		;MOV cx, 3030h
-		;MOV ah, 09h
-		;MOV ah, 02h
-		;MOV dl, ch
-		;int 21h
-		;MOV ah, 02h
-		;MOV dl, cl
-		;int 21h
+	L2:
+
+		MOV al, 4
+		MOV bl, 2
+
+		MUL bl
+		MOV t2, al
+		MOV bl , t2
+ 		MOV g, bl 
+		mov dx, offset caca
+		mov ah, 9 
+		int 21h
+		MOV dl, g
+		ADD dl, 30h
+		MOV ah, 02h
+		int 21h
+		MOV d, 30
+ 	L3:
+
+		JMP L0
+
+	L1:
+
 		.exit
 
 	main ENDP
