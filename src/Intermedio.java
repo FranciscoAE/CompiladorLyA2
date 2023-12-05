@@ -106,6 +106,7 @@ public class Intermedio {
                     cuadruploCode.add(cuad);
                     while(p.getToken() != 120)
                     {
+                        
                         Avanzar();
                         leer();
                         
