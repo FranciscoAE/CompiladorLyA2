@@ -6,7 +6,7 @@
 	e db 4
 	f db 5
 	g db ?
-	caca db "Hola",10,13,'$' 
+	caca db "Hola resultado" ,10,13,'$' 
 	t2 db ?
 
 

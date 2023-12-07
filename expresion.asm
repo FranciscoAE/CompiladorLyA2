@@ -3,7 +3,7 @@ Segmento Data
  DECLARE int e 4 
  DECLARE int f 5 
  DECLARE int g ? 
- DECLARE string caca "Hola" 
+ DECLARE string caca "Hola resultado" 
  DECLARE dd t2 ? 
 
 

@@ -392,7 +392,14 @@ public class Intermedio {
                         i++;
                         DataMaquina = DataMaquina + "\t" + palabras[i] + " db ";
                         i++;
-                        DataMaquina = DataMaquina +  palabras[i] + ",10,13,'$' \n";
+                        DataMaquina = DataMaquina +  palabras[i] + " ";
+                        if(palabras[i].charAt(0) != 10)
+                        {
+                            i++;
+                            DataMaquina = DataMaquina + palabras[i] + " ";
+                            i++;
+                        }
+                        DataMaquina = DataMaquina + ",10,13,'$' \n";
                     }
                     else{
                         i++;
